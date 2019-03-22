@@ -1,0 +1,8 @@
+[package]
+name = "RISC_16_bit"
+version = "0.1.0"
+authors = ["Aidan K. Ewart <aidanprattewart@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+modVM = "0.3.0"

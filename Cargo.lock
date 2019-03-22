@@ -1,0 +1,14 @@
+[[package]]
+name = "RISC_16_bit"
+version = "0.1.0"
+dependencies = [
+ "modVM 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "modVM"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[metadata]
+"checksum modVM 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "43de971b7ec05f9d7e6f4e2b49eadb4457c2d2b3ef64afb4478b0f5a8dd3f3a6"
