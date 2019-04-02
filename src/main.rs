@@ -4,9 +4,10 @@ extern crate modVM;
 use RISC_16_bit::*;
 use std::num::Wrapping;
 use std::{process, env};
-use std::fs::read;
+use std::fs::{read, read_to_string, write};
 use std::path::Path;
 mod compiler;
+mod scc;
 
 fn read_u16(bytestream: &[u8]) -> Vec<u16> {
     bytestream.chunks(2)
@@ -71,6 +72,35 @@ fn main() {
             machine.run().unwrap().join_processors();
 
             println!(":=>Machine Halted")
+        },
+        "scc" => {
+            if args.len() < 4 {
+                println!("Argument ERROR: Not enough arguments supplied.");
+                process::exit(1);
+            }
+            let data = match read_to_string(&args[2]) {
+                Ok(x) => x,
+                Err(x) => {
+                    println!("Application ERROR: {}", x);
+                    process::exit(3);
+                },
+            };
+
+            let compiled = match scc::compile(data) {
+                Ok(x) => x,
+                Err(x) => {
+                    println!("Application ERROR: {}", x);
+                    process::exit(3);
+                },
+            };
+
+            match write(&args[3], compiled) {
+                Ok(_) => {},
+                Err(x) => {
+                    println!("Application ERROR: {}", x);
+                    process::exit(3);
+                },
+            };
         },
         _ => {
             println!("Argument ERROR: Command `{}` not recognised.", args[0]);

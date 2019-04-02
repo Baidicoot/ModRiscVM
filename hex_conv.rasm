@@ -1,0 +1,53 @@
+SET a 0
+SET b 1
+SET c 2
+SET d 3
+PNT a a
+PNT b b
+PNT c c
+PNT d d
+SET e 58
+LST a e
+JNZ o 42
+    SET f 65
+    SUB a f
+    CPY o a
+SET p 54
+    SET f 48
+    SUB a f
+    CPY o a
+LST b e
+JNZ o 72
+    SET f 65
+    SUB b f
+    CPY o b
+SET p 81
+    SET f 48
+    SUB b f
+    CPY o b
+LST c e
+JNZ o 99
+    SET f 65
+    SUB c f
+    CPY o c
+SET p 108
+    SET f 48
+    SUB c f
+    CPY o c
+LST d e
+JNZ o 123
+    SET f 65
+    SUB d f
+    CPY o d
+SET p 135
+    SET f 48
+    SUB d f
+    CPY o d
+SET e 0
+SAV a e
+SET e 1
+SAV b e
+SET e 2
+SAV c e
+SET e 3
+SAV d e

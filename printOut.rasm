@@ -1,0 +1,13 @@
+SET a 72
+SET b 8080
+SET c 8081
+
+SAV a c
+SAV a b
+
+SET a 10
+
+SAV a c
+SAV a b
+
+HLT

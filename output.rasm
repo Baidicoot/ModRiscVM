@@ -1,0 +1,33 @@
+
+SET e 8000
+SET f 16000
+
+SET a 18
+ADD count a
+SAV out f
+SET a 1
+ADD a f
+CPY out f
+SET count 6
+SET a 1
+SUB f a
+CPY out f
+PNT f count
+
+PNT e a
+SET b 1
+SUB e b
+CPY out e
+PNT e b
+ADD a b
+SAV out e
+SET a 1
+SUB f a
+CPY out f
+PNT f count
+
+HLT
+SET a 1
+SUB f a
+CPY out f
+PNT f count

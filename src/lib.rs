@@ -29,6 +29,20 @@ impl Processor<u16> for MainProcessor {
             _ => return Err(3),
         };
 
+        println!("Items: {:?}", self.registers);
+
+        let topF = match channels[0].query(LoadRequest(self.registers[7])).unwrap() {
+            Data(x) => x,
+            _ => return Err(3),
+        };
+
+        let topE = match channels[0].query(LoadRequest(self.registers[6])).unwrap() {
+            Data(x) => x,
+            _ => return Err(3),
+        };
+
+        println!("\nVal at f ({}): {}, e ({}): {}\n", self.registers[7], topF, self.registers[6], topE);
+
         match ins {
             0 => Err(0),
             1 => { // point instruction
@@ -126,6 +140,8 @@ impl Processor<u16> for MainProcessor {
                 
                 self.registers[1] += 3;
 
+                println!("Copying {} to {}", args.0, args.1);
+
                 let data = match self.registers.get(args.0 as usize) {
                     Some(x) => *x,
                     None => return Err(2),
@@ -164,6 +180,8 @@ impl Processor<u16> for MainProcessor {
                     },
                 );
 
+                println!("{} + {}", data.0, data.1);
+
                 self.registers[0] = *data.0 + *data.1;
 
                 Ok(())
@@ -192,6 +210,8 @@ impl Processor<u16> for MainProcessor {
                         None => return Err(2),
                     },
                 );
+
+                println!("{} - {}", data.0, data.1);
 
                 self.registers[0] = *data.0 - *data.1;
 
@@ -344,7 +364,10 @@ impl Processor<u16> for MainProcessor {
 
                 Ok(())
             },
-            _ => Err(1),
+            x => {
+                    println!("{}", x);
+                    Err(1)
+                },
         }
     }
 }
@@ -379,9 +402,9 @@ impl Peripheral<u16> for PrintMemory {
                 }
             },
             SaveRequest(x, y) => {
-                match self.mem.get_mut(x as usize) {
+                match self.mem.get_mut(y as usize) {
                     Some(z) => {
-                        *z = y;
+                        *z = x;
                         Good
                     },
                     None => Fail(0),
@@ -393,11 +416,18 @@ impl Peripheral<u16> for PrintMemory {
     fn cycle(&mut self) -> Result<(), u16> {
         let flag = self.mem[8080];
 
-        if flag != 0 {
+        if flag == 2 {
             let data = self.mem[8081];
-            let [lower, upper] = data.to_be_bytes();
+            let [upper, lower] = data.to_be_bytes();
 
-            print!("{}{}", lower as char, upper as char);
+            print!("{}{}", upper as char, lower as char);
+            self.mem[8080] = 0;
+        } else if flag != 0 {
+            let data = self.mem[8081];
+            let [_, lower] = data.to_be_bytes();
+
+            print!("{}", lower as char);
+            self.mem[8080] = 0;
         }
 
         Ok(())

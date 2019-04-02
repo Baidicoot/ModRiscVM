@@ -2,17 +2,24 @@ use std::fs::{read_to_string, write};
 use std::path::Path;
 
 pub fn compile_raw(s: String) -> Result<Vec<u16>, String> {
-    let lines = s.lines();
-    let prg_out = vec![];
+    let lines = s.lines()
+        .filter(|d| {
+            d != &""
+        });
+    let mut prg_out = vec![];
 
     for (i, line) in lines.enumerate() {
         let structure: Vec<&str> = line.trim().split(" ").collect();
 
         let command = structure[0];
+
+        if command == "HLT" {
+            prg_out.push(0);
+            continue;
+        }
+
         let arg1 = structure[1];
         let arg2 = structure[2];
-
-        let mut prg_out = vec![];
 
         match command {
             "PNT" => {
@@ -38,10 +45,10 @@ pub fn compile_raw(s: String) -> Result<Vec<u16>, String> {
                 });
             },
             "SET" => {
-                prg_out.push(1);
-                prg_out.push(match arg1.parse::<u16>() {
-                    Ok(x) => x,
-                    Err(x) => return Err(x.to_string()),
+                prg_out.push(3);
+                prg_out.push(match get_reg(arg1) {
+                    Some(x) => x,
+                    None => return Err(format!("Did not recognise register: `{}` at line {}.", arg1, i)),
                 });
                 prg_out.push(match arg2.parse::<u16>() {
                     Ok(x) => x,
@@ -135,9 +142,6 @@ pub fn compile_raw(s: String) -> Result<Vec<u16>, String> {
                     Some(x) => x,
                     None => return Err(format!("Did not recognise register: `{}` at line {}.", arg1, i)),
                 });
-            },
-            "HLT" => {
-                prg_out.push(0);
             },
             x => return Err(format!("Did not recognise instruction: `{}` at line {}.", command, i)),
         }
